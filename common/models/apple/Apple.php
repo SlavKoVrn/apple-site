@@ -2,7 +2,10 @@
 
 namespace common\models\apple;
 
-use common\helpers\ColorRandomizer;
+use common\helpers\{
+    AppleEmergenceRandomizer,
+    ColorRandomizer
+};
 use common\models\Color;
 use common\queries\Apple as AppleQuery;
 use yii\db\{
@@ -25,6 +28,9 @@ use yii\db\{
  */
 class Apple extends ActiveRecord
 {
+    /** @var string coverage of apple emergence range (relative to the current date) */
+    const EMERGENCE_RANGE = '10 hours';
+
     /**
      * {@inheritdoc}
      */
@@ -84,6 +90,8 @@ class Apple extends ActiveRecord
     {
         parent::init();
         $this->color_id = (new ColorRandomizer())->nextRandom();
+        $this->appear_at = (new AppleEmergenceRandomizer(self::EMERGENCE_RANGE . ' ago', self::EMERGENCE_RANGE))
+            ->nextRandom();
     }
 
     /**

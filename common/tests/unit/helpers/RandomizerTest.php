@@ -5,10 +5,12 @@ namespace common\tests\unit\helpers;
 use Codeception\Test\Unit;
 use common\fixtures\ColorFixture;
 use common\helpers\{
+    AppleEmergenceRandomizer,
     ColorRandomizer,
     IRandomizer
 };
 use common\tests\UnitTester;
+use DateTime;
 
 class RandomizerTest extends Unit
 {
@@ -30,15 +32,51 @@ class RandomizerTest extends Unit
         $initValue = $randomizer->nextRandom();
 
         while ($totalAttempts--) {
-            if ($initValue !== $randomizer->nextRandom()) {
+            $newValue = $randomizer->nextRandom();
+            if ($initValue !== $newValue) {
                 return;
             }
         }
-        $this->fail("values are not random after {$maxAttempts} attempts");
+        $this->fail("values are not random after {$maxAttempts} attempts: {$initValue}, {$newValue}");
     }
 
-    public function testColor()
+    public function testColorRandomness()
     {
-        $this->testValuesForRandomness(new ColorRandomizer(), 4);
+        $this->testValuesForRandomness(new ColorRandomizer(), 8);
+    }
+
+    public function testAppleEmergenceCorrectness()
+    {
+        $testRanges = [
+            ['1 sec ago', '1 sec'],
+            ['1 min ago', '1 min'],
+            ['1 hour ago', '1 hour'],
+            ['1 day ago', '1 day'],
+        ];
+
+        foreach ($testRanges as $range) {
+            $minDt = (new DateTime())->modify($range[0])->format('Y-m-d H:i:s');
+            $maxDt = (new DateTime())->modify($range[1])->format('Y-m-d H:i:s');
+            $randomDt = (new AppleEmergenceRandomizer($range[0], $range[1]))->nextRandom();
+
+            $this->assertGreaterThanOrEqual($minDt, $randomDt);
+            $this->assertLessThanOrEqual($maxDt, $randomDt);
+        }
+    }
+
+    public function testAppleEmergenceRandomness()
+    {
+        $testRanges = [
+            ['1 sec ago', '1 sec'],
+            ['1 min ago', '1 min'],
+            ['1 hour ago', '1 hour'],
+            ['1 day ago', '1 day'],
+        ];
+
+        foreach ($testRanges as $index => $range) {
+            $randomizer = new AppleEmergenceRandomizer($range[0], $range[1]);
+            $attempts = $index > 0 ? 1 : 8;
+            $this->testValuesForRandomness($randomizer, $attempts);
+        }
     }
 }
