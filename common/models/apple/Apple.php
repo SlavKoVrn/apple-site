@@ -2,6 +2,7 @@
 
 namespace common\models\apple;
 
+use common\dictionaries\AppleStatus;
 use common\helpers\{
     AppleEmergenceRandomizer,
     ColorRandomizer
@@ -30,6 +31,15 @@ class Apple extends ActiveRecord
 {
     /** @var string coverage of apple emergence range (relative to the current date) */
     const EMERGENCE_RANGE = '10 hours';
+
+    protected function initAttributeValues()
+    {
+        $this->color_id = (new ColorRandomizer())->nextRandom();
+        $this->status_id = AppleStatus::TREE;
+        $this->appear_at = (new AppleEmergenceRandomizer(self::EMERGENCE_RANGE . ' ago', self::EMERGENCE_RANGE))
+            ->nextRandom();
+        $this->eaten_percent = 0;
+    }
 
     /**
      * {@inheritdoc}
@@ -89,9 +99,7 @@ class Apple extends ActiveRecord
     public function init()
     {
         parent::init();
-        $this->color_id = (new ColorRandomizer())->nextRandom();
-        $this->appear_at = (new AppleEmergenceRandomizer(self::EMERGENCE_RANGE . ' ago', self::EMERGENCE_RANGE))
-            ->nextRandom();
+        $this->initAttributeValues();
     }
 
     /**
