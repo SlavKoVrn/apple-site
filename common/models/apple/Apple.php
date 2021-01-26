@@ -2,6 +2,7 @@
 
 namespace common\models\apple;
 
+use common\helpers\ColorRandomizer;
 use common\models\Color;
 use common\queries\Apple as AppleQuery;
 use yii\db\{
@@ -74,6 +75,15 @@ class Apple extends ActiveRecord
             'fall_at' => 'Дата падения',
             'eaten_percent' => 'Процент съеденного',
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->color_id = (new ColorRandomizer())->nextRandom();
     }
 
     /**
