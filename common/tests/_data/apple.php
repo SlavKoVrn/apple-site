@@ -11,7 +11,7 @@ date_default_timezone_set('Asia/Almaty');
 function getDateTime($modify)
 {
     return (new DateTime())
-        ->modify('4 hour 35 min ago')
+        ->modify($modify)
         ->format('Y-m-d H:i:s');
 }
 
