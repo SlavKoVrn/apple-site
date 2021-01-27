@@ -7,6 +7,7 @@ use common\fixtures\ColorFixture;
 use common\helpers\{
     AppleEmergenceRandomizer,
     ColorRandomizer,
+    DateTimeHelper,
     IRandomizer
 };
 use common\tests\UnitTester;
@@ -55,8 +56,8 @@ class RandomizerTest extends Unit
         ];
 
         foreach ($testRanges as $range) {
-            $minDt = (new DateTime())->modify($range[0])->format('Y-m-d H:i:s');
-            $maxDt = (new DateTime())->modify($range[1])->format('Y-m-d H:i:s');
+            $minDt = (new DateTime())->modify($range[0])->format(DateTimeHelper::FORMAT_SQL);
+            $maxDt = (new DateTime())->modify($range[1])->format(DateTimeHelper::FORMAT_SQL);
             $randomDt = (new AppleEmergenceRandomizer($range[0], $range[1]))->nextRandom();
 
             $this->assertGreaterThanOrEqual($minDt, $randomDt);

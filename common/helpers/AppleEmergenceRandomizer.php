@@ -42,6 +42,6 @@ class AppleEmergenceRandomizer extends NumberRandomizer
      */
     public function nextRandom()
     {
-        return date('Y-m-d H:i:s', parent::nextRandom());
+        return date(DateTimeHelper::FORMAT_SQL, parent::nextRandom());
     }
 }

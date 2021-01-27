@@ -2,10 +2,15 @@
 
 namespace common\models\apple;
 
+use common\components\{
+    AppleException,
+    NonPresentAppleException
+};
 use common\dictionaries\AppleStatus;
 use common\helpers\{
     AppleEmergenceRandomizer,
-    ColorRandomizer
+    ColorRandomizer,
+    DateTimeHelper
 };
 use common\models\Color;
 use common\queries\Apple as AppleQuery;
@@ -31,6 +36,17 @@ class Apple extends ActiveRecord
 {
     /** @var string coverage of apple emergence range (relative to the current date) */
     const EMERGENCE_RANGE = '10 hours';
+
+    /**
+     * Ensure apple is present
+     * @throws NonPresentAppleException
+     */
+    protected function ensurePresence()
+    {
+        if ($this->appear_at > DateTimeHelper::nowSql()) {
+            throw new NonPresentAppleException();
+        }
+    }
 
     protected function initAttributeValues()
     {
@@ -72,6 +88,7 @@ class Apple extends ActiveRecord
             [['color_id', 'status_id'], 'integer'],
             [['color_id'], 'exist', 'skipOnError' => true, 'targetRelation' => 'color'],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetRelation' => 'status'],
+            [['fall_at'], 'compare', 'compareAttribute' => 'appear_at', 'operator' => '>='],
             [['fall_at'], 'default', 'value' => null],
             [['eaten_percent'], 'number', 'min' => 0, 'max' => 100],
             [['eaten_percent'], 'default', 'value' => 0],
@@ -129,5 +146,39 @@ class Apple extends ActiveRecord
     public static function find()
     {
         return new AppleQuery(get_called_class());
+    }
+
+    public function isFallen(): bool
+    {
+        return (int) $this->status_id === AppleStatus::GROUND;
+    }
+
+    public function isHanging(): bool
+    {
+        return (int) $this->status_id === AppleStatus::TREE;
+    }
+
+    public function isRotten(): bool
+    {
+        return (int) $this->status_id === AppleStatus::ROTTEN;
+    }
+
+    /**
+     * Falling of the apple
+     * @return bool whether the saving succeeded
+     * @throws AppleException if the apple is not hanging
+     * @throws NonPresentAppleException
+     */
+    public function fall(): bool
+    {
+        $this->ensurePresence();
+        if (!$this->isHanging()) {
+            throw new AppleException('The apple is not hanging, so it cannot fall');
+        }
+
+        $this->fall_at = DateTimeHelper::nowSql();
+        $this->status_id = AppleStatus::GROUND;
+
+        return $this->save();
     }
 }

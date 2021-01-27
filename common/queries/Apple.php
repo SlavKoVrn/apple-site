@@ -13,10 +13,10 @@ use yii\db\ActiveQuery;
 class Apple extends ActiveQuery
 {
     /**
-     * Consider apples only with a non-future date of appearance
+     * Consider existing apples only with a non-future date of appearance
      * @return static
      */
-    public function actual()
+    public function present()
     {
         return $this->andWhere('appear_at <= NOW()');
     }
