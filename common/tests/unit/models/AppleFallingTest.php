@@ -3,10 +3,7 @@
 namespace common\tests\unit\models;
 
 use Codeception\Test\Unit;
-use common\components\{
-    AppleException,
-    NonPresentAppleException
-};
+use common\components\AppleException;
 use common\fixtures\AppleFixture;
 use common\helpers\DateTimeHelper;
 use common\models\apple\Apple;
@@ -55,23 +52,6 @@ class AppleFallingTest extends Unit
             $rotten->fall();
         } catch (Exception $e) {
             $this->assertInstanceOf(AppleException::class, $e);
-            return;
-        }
-
-        $this->fail('should catch an exception');
-    }
-
-    public function testFutureApple()
-    {
-        $this->tester->amGoingTo('Check falling of future apple');
-        $this->tester->expect('thrown exception');
-
-        try {
-            /** @var Apple $future */
-            $future = $this->tester->grabFixture('apple', 'green future');
-            $future->fall();
-        } catch (Exception $e) {
-            $this->assertInstanceOf(NonPresentAppleException::class, $e);
             return;
         }
 

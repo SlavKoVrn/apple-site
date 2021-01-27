@@ -174,6 +174,34 @@ class Apple extends ActiveRecord
     }
 
     /**
+     * Eat a percent of the apple
+     * @param float $percent
+     * @return bool whether one can eat the apple more
+     * @throws AppleException if the apple is not fallen
+     */
+    public function eat(float $percent): bool
+    {
+        if (!$this->isFallen()) {
+            throw new AppleException('The apple is not fallen, so it cannot be eaten');
+        }
+
+        $eatenPercent = $this->eaten_percent + $percent;
+
+        if ($eatenPercent >= 100) {
+            try {
+                $this->delete();
+            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
+            } finally {
+                return false;
+            }
+        }
+
+        $this->eaten_percent = $eatenPercent;
+        return $this->save();
+    }
+
+    /**
      * Falling of the apple
      * @return bool whether the saving succeeded
      * @throws AppleException if the apple is not hanging
