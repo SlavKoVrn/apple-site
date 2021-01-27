@@ -9,7 +9,7 @@ use common\models\apple\Apple;
 use common\tests\UnitTester;
 use yii\base\Exception;
 
-class AppleEatingTest extends Unit
+class FutureEatingTest extends Unit
 {
     /**
      * @var UnitTester

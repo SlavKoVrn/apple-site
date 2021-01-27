@@ -21,9 +21,9 @@ class AppleTest extends Unit
         ];
     }
 
-    public function testFetchActualApples()
+    public function testFetchPresentApples()
     {
-        $this->tester->amGoingTo('check count of actual apples');
+        $this->tester->amGoingTo('check count of present apples');
 
         $dataProvider = new AppleDataProvider();
         $actualApples = $dataProvider->getModels();
