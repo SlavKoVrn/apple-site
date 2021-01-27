@@ -112,6 +112,16 @@ class Apple extends ActiveRecord
 
     /**
      * @inheritDoc
+     * @throws NonPresentAppleException
+     */
+    public function afterFind()
+    {
+        $this->ensurePresence();
+        parent::afterFind();
+    }
+
+    /**
+     * @inheritDoc
      */
     public function init()
     {
@@ -167,11 +177,9 @@ class Apple extends ActiveRecord
      * Falling of the apple
      * @return bool whether the saving succeeded
      * @throws AppleException if the apple is not hanging
-     * @throws NonPresentAppleException
      */
     public function fall(): bool
     {
-        $this->ensurePresence();
         if (!$this->isHanging()) {
             throw new AppleException('The apple is not hanging, so it cannot fall');
         }
