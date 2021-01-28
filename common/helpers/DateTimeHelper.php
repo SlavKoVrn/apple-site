@@ -19,7 +19,7 @@ class DateTimeHelper
      * @see DateTime::modify
      * @return string
      */
-    public static function relative(string $modify): string
+    public static function fromNow(string $modify): string
     {
         return (new DateTime())
             ->modify($modify)

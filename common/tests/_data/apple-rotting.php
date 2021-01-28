@@ -51,35 +51,19 @@ return [
         'eaten_percent' => 10,
     ],
 
-    // rotten apples
+    // rotten apples, not handled yet (still "fallen")
     'green rotten holistic' => [
         'color_id' => 3,
-        'status_id' => 3,
+        'status_id' => 2,
         'appear_at' => DT::fromNow('5 hours 4 min ago'),
         'fall_at' => DT::fromNow('5 hours 1 min ago'),
         'eaten_percent' => 0,
     ],
     'green rotten bitten' => [
         'color_id' => 3,
-        'status_id' => 3,
+        'status_id' => 2,
         'appear_at' => DT::fromNow('8 hours 34 min ago'),
         'fall_at' => DT::fromNow('6 hours 24 min ago'),
         'eaten_percent' => 77,
-    ],
-
-    // future apples
-    'green future' => [
-        'color_id' => 3,
-        'status_id' => 1,
-        'appear_at' => DT::fromNow('+6 hours 47 min'),
-        'fall_at' => null,
-        'eaten_percent' => 0,
-    ],
-    'yellow future' => [
-        'color_id' => 2,
-        'status_id' => 1,
-        'appear_at' => DT::fromNow('+5 hours 26 min'),
-        'fall_at' => null,
-        'eaten_percent' => 0,
     ],
 ];

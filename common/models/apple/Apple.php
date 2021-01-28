@@ -37,6 +37,9 @@ class Apple extends ActiveRecord
     /** @var string coverage of apple emergence range (relative to the current date) */
     const EMERGENCE_RANGE = '10 hours';
 
+    /** @var int the number of seconds from falling until the apple rots */
+    const ROT_TIMEOUT_SECONDS = YII_ENV_TEST ? 1 : 5 * 60 * 60;
+
     /**
      * Ensure apple is present
      * @throws NonPresentAppleException
@@ -46,6 +49,22 @@ class Apple extends ActiveRecord
         if ($this->appear_at > DateTimeHelper::nowSql()) {
             throw new NonPresentAppleException();
         }
+    }
+
+    /**
+     * Handle apple rotting
+     */
+    protected function handleRotting()
+    {
+        if (!$this->isFallen()) {
+            return;
+        }
+
+        if ($this->fall_at > DateTimeHelper::fromNow(static::ROT_TIMEOUT_SECONDS . ' sec ago')) {
+            return;
+        }
+
+        $this->status_id = AppleStatus::ROTTEN;
     }
 
     protected function initAttributeValues()
@@ -116,8 +135,31 @@ class Apple extends ActiveRecord
      */
     public function afterFind()
     {
+        // prevent fetching the apple if it is non-present (future)
         $this->ensurePresence();
+
+        // refresh the apple if it is factually rotten but not refreshed in DB
+        $this->handleRotting();
+
         parent::afterFind();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->handleRotting();
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeValidate()
+    {
+        $this->handleRotting();
+        return parent::beforeValidate();
     }
 
     /**
