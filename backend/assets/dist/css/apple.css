@@ -1,0 +1,3 @@
+.site-index > * + * {
+    margin-top: 1em;
+}

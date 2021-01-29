@@ -3,28 +3,39 @@
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-use yii\grid\{
-    ActionColumn,
-    GridView,
-    SerialColumn
-};
+use backend\assets\AppleAsset;
+use yii\helpers\Html;
+
+AppleAsset::register($this);
+
+$generateButtonCaption = count($dataProvider->getModels()) > 0 ? 'Generate more apples' : 'Generate apples';
 ?>
 <div class="site-index">
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => SerialColumn::class],
+    <div class="apple-generation">
+        <?= Html::a($generateButtonCaption, ['apple/generate'], [
+            'class' => [
+                'btn',
+                'btn-info',
+                'pull-left',
+            ],
+        ]) ?>
 
-            'id',
-            'color_id',
-            'status_id',
-            'appear_at',
-            'fall_at',
-            'eaten_percent',
+        <?= Html::a('Start from scratch', ['apple/purge'], [
+            'class' => [
+                'btn',
+                'btn-warning',
+                'pull-right',
+            ],
+        ]) ?>
 
-            ['class' => ActionColumn::class],
-        ],
-    ]) ?>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="apple-grid-view">
+        <?= $this->render('apple/_grid-view', [
+            'dataProvider' => $dataProvider,
+        ]) ?>
+    </div>
 
 </div>
