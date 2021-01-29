@@ -54,15 +54,23 @@ class AppleController extends Controller
         $model = new AppleEatingForm($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            $session = Yii::$app->session;
+
             try {
                 $eaten = $model->eat();
-                $succeeded = $eaten && !is_null($model->apple);
-                Yii::$app->session->addFlash(
-                    $succeeded ? 'success' : 'error',
-                    $succeeded ? ($model->apple->size * 100) . '% left' : 'Failed to eat an apple'
-                );
+
+                if ($model->hasErrors()) {
+                    $session->addFlash('error', 'Failed to eat an apple');
+                } else {
+                    $session->addFlash(
+                        'success',
+                        $eaten && !is_null($model->apple)
+                            ? ($model->apple->size * 100) . '% left'
+                            : 'The apple was eaten whole'
+                    );
+                }
             } catch (AppleException $e) {
-                Yii::$app->session->addFlash('error', $e->getMessage());
+                $session->addFlash('error', $e->getMessage());
             }
         }
 

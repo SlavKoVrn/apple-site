@@ -56,8 +56,9 @@ class Apple extends ActiveRecord
 
     /**
      * Handle apple rotting
+     * @param bool $refreshDb refresh model in DB and repopulate relation from DB
      */
-    protected function handleRotting()
+    protected function handleRotting(bool $refreshDb = false)
     {
         if (!$this->isFallen()) {
             return;
@@ -68,6 +69,11 @@ class Apple extends ActiveRecord
         }
 
         $this->status_id = AppleStatus::ROTTEN;
+
+        if ($refreshDb) {
+            $this->updateAttributes(['status_id']);
+            $this->populateRelation('status', Status::findOne($this->status_id));
+        }
     }
 
     /**
@@ -145,7 +151,7 @@ class Apple extends ActiveRecord
         $this->ensurePresence();
 
         // refresh the apple if it is factually rotten but not refreshed in DB
-        $this->handleRotting();
+        $this->handleRotting(true);
 
         parent::afterFind();
     }
