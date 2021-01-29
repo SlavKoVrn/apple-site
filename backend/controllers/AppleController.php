@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\components\AppleException;
+use common\models\apple\Apple;
 use common\repositories\AppleRepository;
 use common\services\AppleProducer;
 use Yii;
@@ -23,7 +25,7 @@ class AppleController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['generate', 'purge'],
+                        'actions' => ['generate', 'fall', 'purge'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -47,6 +49,22 @@ class AppleController extends Controller
         $infoMsg = count($producer->presentApples()) . ' apple(-s) grew on the tree and '
             . count($producer->nonPresentApples()) . ' apple(-s) will grow soon';
         Yii::$app->session->addFlash('info', $infoMsg);
+
+        return $this->redirect('/site/index');
+    }
+
+    /**
+     * Make an apple fall
+     * @param int $id apple ID
+     * @return Response
+     */
+    public function actionFall($id)
+    {
+        try {
+            Apple::findOne($id)->fall();
+        } catch (AppleException $e) {
+            Yii::$app->session->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirect('/site/index');
     }
