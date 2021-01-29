@@ -67,8 +67,8 @@ class AppleFallingTest extends Unit
         $hanging = $this->tester->grabFixture('apple', 'red hanging');
 
         try {
-            $fell = $hanging->fall();
-            $this->assertTrue($fell);
+            $sameApple = $hanging->fall();
+            $this->assertInstanceOf(Apple::class, $sameApple);
         } catch (Exception $e) {
             $this->fail('should not throw an exception');
         }

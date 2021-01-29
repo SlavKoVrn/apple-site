@@ -31,6 +31,8 @@ use yii\db\{
  *
  * @property Color $color
  * @property Status $status
+ *
+ * @property float $size from 0 to 1
  */
 class Apple extends ActiveRecord
 {
@@ -38,7 +40,7 @@ class Apple extends ActiveRecord
     const EMERGENCE_RANGE = '10 hours';
 
     /** @var int the number of seconds from falling until the apple rots */
-    const ROT_TIMEOUT_SECONDS = YII_ENV_TEST ? 1 : 5 * 60 * 60;
+    const ROT_TIMEOUT_SECONDS = YII_ENV_TEST ? 2 : 5 * 60 * 60;
 
     /**
      * Ensure apple is present
@@ -67,6 +69,9 @@ class Apple extends ActiveRecord
         $this->status_id = AppleStatus::ROTTEN;
     }
 
+    /**
+     * Initialize attribute values after creating the apple
+     */
     protected function initAttributeValues()
     {
         $this->color_id = (new ColorRandomizer())->nextRandom();
@@ -229,26 +234,29 @@ class Apple extends ActiveRecord
 
         $eatenPercent = $this->eaten_percent + $percent;
 
-        if ($eatenPercent >= 100) {
-            try {
+        try {
+            if ($eatenPercent >= 100) {
                 $this->delete();
-            } catch (\Exception $e) {
-            } catch (\Throwable $e) {
-            } finally {
                 return false;
             }
+
+            $this->eaten_percent = $eatenPercent;
+            $this->update();
+
+            return true;
+        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         }
 
-        $this->eaten_percent = $eatenPercent;
-        return $this->save();
+        return false;
     }
 
     /**
      * Falling of the apple
-     * @return bool whether the saving succeeded
+     * @return static
      * @throws AppleException if the apple is not hanging
      */
-    public function fall(): bool
+    public function fall()
     {
         if (!$this->isHanging()) {
             throw new AppleException('The apple is not hanging, so it cannot fall');
@@ -257,6 +265,21 @@ class Apple extends ActiveRecord
         $this->fall_at = DateTimeHelper::nowSql();
         $this->status_id = AppleStatus::GROUND;
 
-        return $this->save();
+        try {
+            $this->update();
+        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the apple size from 0 to 1
+     * @return float
+     */
+    public function getSize(): float
+    {
+        return 1 - $this->eaten_percent / 100;
     }
 }

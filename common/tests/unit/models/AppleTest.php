@@ -30,5 +30,13 @@ class AppleTest extends Unit
         $this->assertNotNull($model->appear_at);
         $this->assertNull($model->fall_at);
         $this->assertEquals(0, $model->eaten_percent);
+
+        $this->tester->expect('new apple cannot be saved into DB if it fell');
+        $model->fall();
+        $this->tester->dontSeeRecord(Apple::class, ['id' => 12]);
+
+        $this->tester->expect('new apple cannot be saved into DB if it was bitten');
+        $model->eat(4);
+        $this->tester->dontSeeRecord(Apple::class, ['id' => 12]);
     }
 }

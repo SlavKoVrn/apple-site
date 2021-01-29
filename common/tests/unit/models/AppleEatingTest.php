@@ -67,7 +67,7 @@ class AppleEatingTest extends Unit
         $this->tester->expectTo('eat successfully');
 
         /** @var Apple $fallen */
-        $fallen = $this->tester->grabFixture('apple', 'green fallen holistic');
+        $fallen = $this->tester->grabFixture('apple', 'green fallen bitten');
         $this->assertEquals(2, $fallen->status_id);
 
         try {
@@ -80,18 +80,21 @@ class AppleEatingTest extends Unit
     public function testEatenPercent()
     {
         /** @var Apple $apple */
-        $apple = $this->tester->grabFixture('apple', 'yellow fallen bitten');
-        $this->assertEquals(10, $apple->eaten_percent);
+        $apple = $this->tester->grabFixture('apple', 'green fallen bitten');
+        $this->assertEquals(37, $apple->eaten_percent);
+        $this->assertEquals(.63, $apple->size);
 
         try {
             $canEatMore = $apple->eat(20);
             $this->assertTrue($canEatMore);
-            $this->assertEquals(30, $apple->eaten_percent);
+            $this->assertEquals(57, $apple->eaten_percent);
+            $this->assertEquals(.43, $apple->size);
             $this->tester->seeRecord(Apple::class, $apple->attributes);
 
             $canEatMore = $apple->eat(40);
             $this->assertTrue($canEatMore);
-            $this->assertEquals(70, $apple->eaten_percent);
+            $this->assertEquals(97, $apple->eaten_percent);
+            $this->assertEquals(.03, $apple->size);
             $this->tester->seeRecord(Apple::class, $apple->attributes);
 
             $this->tester->expectTo('eat up the apple and remove it entirely');
@@ -99,7 +102,7 @@ class AppleEatingTest extends Unit
             $this->assertFalse($canEatMore);
             $this->tester->dontSeeRecord(Apple::class, $apple->attributes);
         } catch (Exception $e) {
-            $this->fail('should not throw an exception');
+            $this->fail("should not throw an exception {$e->getTraceAsString()}");
         }
     }
 }

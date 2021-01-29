@@ -34,7 +34,7 @@ class AppleRottingTest extends Unit
         $this->assertEquals(1, $apple->status_id);
 
         $this->tester->amGoingTo('wait for rotting of a hanging apple');
-        sleep(1);
+        sleep(2);
         $this->tester->expectTo('the apple is not rotten');
         $apple->validate();
         $this->assertNotEquals(3, $apple->status_id);
@@ -48,7 +48,7 @@ class AppleRottingTest extends Unit
         $this->assertNotEquals(3, $apple->status_id);
 
         $this->tester->amGoingTo('wait for rotting of a fallen apple');
-        sleep(1);
+        sleep(2);
         $this->tester->expectTo('the apple is rotten');
         $apple->validate();
         $this->assertEquals(3, $apple->status_id);

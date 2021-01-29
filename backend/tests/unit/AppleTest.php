@@ -28,6 +28,6 @@ class AppleTest extends Unit
         $dataProvider = new AppleDataProvider();
         $actualApples = $dataProvider->getModels();
 
-        $this->assertCount(8, $actualApples);
+        $this->assertCount(9, $actualApples);
     }
 }

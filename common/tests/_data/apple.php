@@ -43,6 +43,13 @@ return [
         'fall_at' => DT::fromNow('1 hours 37 min ago'),
         'eaten_percent' => 5,
     ],
+    'green fallen bitten' => [
+        'color_id' => 3,
+        'status_id' => 2,
+        'appear_at' => DT::fromNow('9 hours 49 min ago'),
+        'fall_at' => DT::fromNow('0 sec ago'), // use this one for rotting tests because of ROT_TIMEOUT_SECONDS
+        'eaten_percent' => 37,
+    ],
     'yellow fallen bitten' => [
         'color_id' => 2,
         'status_id' => 2,

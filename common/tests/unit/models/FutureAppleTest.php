@@ -37,7 +37,7 @@ class FutureEatingTest extends Unit
         $this->assertEquals(3, $rotten->status_id);
 
         /** @var Apple $fallen */
-        $fallen = $this->tester->grabFixture('apple', 'red fallen bitten');
+        $fallen = $this->tester->grabFixture('apple', 'green fallen bitten');
         $this->assertEquals(2, $fallen->status_id);
     }
 
