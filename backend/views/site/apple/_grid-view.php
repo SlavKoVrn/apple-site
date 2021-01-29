@@ -3,6 +3,7 @@
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use common\dictionaries\AppleStatus;
 use common\models\apple\Apple;
 use yii\bootstrap\Html;
 use yii\grid\{
@@ -32,15 +33,35 @@ echo GridView::widget([
         [
             'attribute' => 'status_id',
             'value' => 'status.name',
+            'contentOptions' => function (Apple $model, $key, $index, $column) {
+                switch ($model->status_id) {
+                    case AppleStatus::TREE:
+                        $alignment = 'left';
+                        break;
+                    case AppleStatus::GROUND:
+                        $alignment = 'center';
+                        break;
+                    case AppleStatus::ROTTEN:
+                        $alignment = 'right';
+                        break;
+                    default:
+                        $alignment = 'justify';
+                }
+                return ['style' => "text-align: {$alignment}"];
+            },
         ],
         'appear_at',
         'fall_at',
-        'eaten_percent',
+        [
+            'attribute' => 'eaten_percent',
+            'label' => 'Size',
+            'value' => 'size',
+        ],
 
         [
             'class' => ActionColumn::class,
             'buttons' => [
-                'fall' => function ($url, $model, $key) {
+                'fall' => function ($url, Apple $model, $key) {
                     return Html::a(
                         Html::icon('hand-down'),
                         ['apple/fall', 'id' => $model->id],
@@ -50,6 +71,14 @@ echo GridView::widget([
             ],
             'header' => 'Fall',
             'template' => '{fall}',
+        ],
+        [
+            'label' => 'Eat',
+            'content' => function (Apple $model, $key, $index, $column) {
+                return $this->render('_eat-form', [
+                    'apple' => $model,
+                ]);
+            },
         ],
     ],
 ]);
