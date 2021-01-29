@@ -12,6 +12,8 @@ use yii\base\Model;
  * @package backend\models\forms
  *
  * A form for eating an apple
+ *
+ * @property Apple|null $apple
  */
 class AppleEatingForm extends Model
 {
@@ -80,9 +82,17 @@ class AppleEatingForm extends Model
     public function eat()
     {
         if ($this->validate()) {
-            return Apple::findOne($this->appleId)->eat($this->eatenPercent);
+            return $this->apple->eat($this->eatenPercent);
         }
 
         return false;
+    }
+
+    /**
+     * @return Apple|null
+     */
+    public function getApple()
+    {
+        return Apple::findOne($this->appleId);
     }
 }

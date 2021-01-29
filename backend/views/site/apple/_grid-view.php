@@ -56,6 +56,7 @@ echo GridView::widget([
             'attribute' => 'eaten_percent',
             'label' => 'Size',
             'value' => 'size',
+            'format' => 'percent',
         ],
 
         [
