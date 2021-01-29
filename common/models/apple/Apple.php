@@ -49,7 +49,7 @@ class Apple extends ActiveRecord
      */
     protected function ensurePresence()
     {
-        if ($this->appear_at > DateTimeHelper::nowSql()) {
+        if (!$this->isPresent()) {
             throw new NonPresentAppleException();
         }
     }
@@ -219,6 +219,15 @@ class Apple extends ActiveRecord
     public function isRotten(): bool
     {
         return (int) $this->status_id === AppleStatus::ROTTEN;
+    }
+
+    /**
+     * Detect whether the apple is present (not future)
+     * @return bool
+     */
+    public function isPresent(): bool
+    {
+        return $this->appear_at <= DateTimeHelper::nowSql();
     }
 
     /**

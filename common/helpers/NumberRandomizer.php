@@ -10,10 +10,10 @@ namespace common\helpers;
  */
 class NumberRandomizer implements IRandomizer
 {
-    /** @var int minimal range limit (inclusive) */
+    /** @var int minimum range limit (inclusive) */
     protected $min;
 
-    /** @var int maximal range limit (inclusive) */
+    /** @var int maximum range limit (inclusive) */
     protected $max;
 
     /**
@@ -23,8 +23,8 @@ class NumberRandomizer implements IRandomizer
      */
     public function __construct($from, $to)
     {
-        $this->min = $from;
-        $this->max = $to;
+        $this->min = min($from, $to);
+        $this->max = max($from, $to);
     }
 
     /**

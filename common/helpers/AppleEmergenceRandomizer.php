@@ -9,6 +9,9 @@ use DateTime;
  * @package common\helpers
  *
  * Apple emergence date generator
+ *
+ * @property string $min
+ * @property string $max
  */
 class AppleEmergenceRandomizer extends NumberRandomizer
 {
