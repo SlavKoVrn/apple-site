@@ -18,7 +18,12 @@ class AppleDataProvider extends ActiveDataProvider
      */
     protected function initQuery()
     {
-        $this->query = Apple::find()->present();
+        $this->query = Apple::find()
+            ->present()
+            ->with([
+                'color',
+                'status',
+            ]);
     }
 
     /**

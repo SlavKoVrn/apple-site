@@ -127,11 +127,11 @@ class Apple extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'color_id' => 'ID цвета',
-            'status_id' => 'ID состояния',
-            'appear_at' => 'Дата появления',
-            'fall_at' => 'Дата падения',
-            'eaten_percent' => 'Процент съеденного',
+            'color_id' => 'Color',
+            'status_id' => 'Status',
+            'appear_at' => 'Appeared at',
+            'fall_at' => 'Fell at',
+            'eaten_percent' => 'Eaten',
         ];
     }
 

@@ -1,3 +1,22 @@
 .site-index > * + * {
     margin-top: 1em;
 }
+
+.apple-grid-view .apple {
+    opacity: .5;
+}
+
+.apple-grid-view .apple.apple-red {
+    background-color: #c00;
+    color: #c00;
+}
+
+.apple-grid-view .apple.apple-yellow {
+    background-color: #ff0;
+    color: #ff0;
+}
+
+.apple-grid-view .apple.apple-green {
+    background-color: #090;
+    color: #090;
+}
