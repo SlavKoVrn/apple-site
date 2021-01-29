@@ -9,6 +9,7 @@ use common\components\{
 use common\dictionaries\AppleStatus;
 use common\helpers\{
     AppleEmergenceRandomizer,
+    AppleErrorHandler,
     ColorRandomizer,
     DateTimeHelper
 };
@@ -236,16 +237,20 @@ class Apple extends ActiveRecord
 
         try {
             if ($eatenPercent >= 100) {
+                $errMsg = 'Failed to delete the apple after eat operation';
                 $this->delete();
                 return false;
             }
 
             $this->eaten_percent = $eatenPercent;
+            $errMsg = 'Failed to save the apple after eat operation';
             $this->update();
 
             return true;
         } catch (\Exception $e) {
+            AppleErrorHandler::alertError($e, $errMsg);
         } catch (\Throwable $e) {
+            AppleErrorHandler::alertError($e, $errMsg);
         }
 
         return false;
@@ -266,9 +271,12 @@ class Apple extends ActiveRecord
         $this->status_id = AppleStatus::GROUND;
 
         try {
+            $errMsg = 'Failed to save the apple after fall operation';
             $this->update();
         } catch (\Exception $e) {
+            AppleErrorHandler::alertError($e, $errMsg);
         } catch (\Throwable $e) {
+            AppleErrorHandler::alertError($e, $errMsg);
         }
 
         return $this;

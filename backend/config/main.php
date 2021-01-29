@@ -1,4 +1,7 @@
 <?php
+
+use common\helpers\AppleErrorHandler;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -32,6 +35,11 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'categories' => [AppleErrorHandler::LOG_CATEGORY],
+                    'logFile' => '@runtime/logs/apple.log',
                 ],
             ],
         ],
