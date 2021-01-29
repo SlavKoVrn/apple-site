@@ -28,5 +28,6 @@ class AppleDataProvider extends ActiveDataProvider
     {
         parent::init();
         $this->initQuery();
+        $this->pagination->pageSize = 40;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\repositories\AppleRepository;
+use common\services\AppleProducer;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\{
@@ -37,6 +39,15 @@ class AppleController extends Controller
      */
     public function actionGenerate($count = null)
     {
+        $producer = !is_null($count)
+            ? new AppleProducer($count, $count)
+            : new AppleProducer();
+        $producer->produce();
+
+        $infoMsg = count($producer->presentApples()) . ' apple(-s) grew on the tree and '
+            . count($producer->nonPresentApples()) . ' apple(-s) will grow soon';
+        Yii::$app->session->addFlash('info', $infoMsg);
+
         return $this->redirect('/site/index');
     }
 
@@ -46,6 +57,9 @@ class AppleController extends Controller
      */
     public function actionPurge()
     {
+        (new AppleRepository())->purge();
+        Yii::$app->session->addFlash('warning', 'All apples were removed');
+
         return $this->redirect('/site/index');
     }
 }

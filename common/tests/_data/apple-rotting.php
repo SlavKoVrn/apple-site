@@ -2,8 +2,6 @@
 
 use common\helpers\DateTimeHelper as DT;
 
-date_default_timezone_set('Asia/Almaty');
-
 return [
     // hanging apples
     'red hanging' => [
