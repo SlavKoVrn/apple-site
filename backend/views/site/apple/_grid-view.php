@@ -5,7 +5,10 @@
 
 use common\dictionaries\AppleStatus;
 use common\models\apple\Apple;
-use yii\bootstrap\Html;
+use yii\bootstrap\{
+    Html,
+    Progress
+};
 use yii\grid\{
     ActionColumn,
     GridView,
@@ -55,15 +58,31 @@ echo GridView::widget([
         [
             'attribute' => 'eaten_percent',
             'label' => 'Size',
-            'value' => 'size',
-            'format' => 'percent',
+            'content' => function (Apple $model, $key, $index, $column) {
+                return Progress::widget([
+                    'percent' => $model->size * 100,
+                    'barOptions' => [
+                        'class' => [
+                            'progress-bar-info',
+                            'progress-bar-striped',
+                        ],
+                    ],
+                    'label' => Yii::$app->formatter->asPercent($model->size),
+                ]);
+            },
+            'contentOptions' => function (Apple $model, $key, $index, $column) {
+                return [
+                    'style' => 'min-width: 16rem;',
+                    'title' => Yii::$app->formatter->asPercent($model->size) . ' left',
+                ];
+            },
         ],
 
         [
             'class' => ActionColumn::class,
             'buttons' => [
                 'fall' => function ($url, Apple $model, $key) {
-                    return $model->isFallen()
+                    return !$model->isHanging()
                         ? null
                         : Html::a(
                             Html::icon('hand-down'),
@@ -78,9 +97,11 @@ echo GridView::widget([
         [
             'label' => 'Eat',
             'content' => function (Apple $model, $key, $index, $column) {
-                return $this->render('_eat-form', [
-                    'apple' => $model,
-                ]);
+                return !$model->isFallen()
+                    ? null
+                    : $this->render('_eat-form', [
+                        'apple' => $model,
+                    ]);
             },
         ],
     ],
