@@ -63,11 +63,13 @@ echo GridView::widget([
             'class' => ActionColumn::class,
             'buttons' => [
                 'fall' => function ($url, Apple $model, $key) {
-                    return Html::a(
-                        Html::icon('hand-down'),
-                        ['apple/fall', 'id' => $model->id],
-                        ['title' => 'Fall']
-                    );
+                    return $model->isFallen()
+                        ? null
+                        : Html::a(
+                            Html::icon('hand-down'),
+                            ['apple/fall', 'id' => $model->id],
+                            ['title' => 'Fall']
+                        );
                 },
             ],
             'header' => 'Fall',
