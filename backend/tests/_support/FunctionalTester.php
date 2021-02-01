@@ -1,5 +1,9 @@
 <?php
+
 namespace backend\tests;
+
+use common\fixtures\UserFixture;
+use Yii;
 
 /**
  * Inherited Methods
@@ -22,4 +26,33 @@ class FunctionalTester extends \Codeception\Actor
    /**
     * Define custom actions here
     */
+
+    public function login()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return;
+        }
+
+        $this->haveFixtures([
+            'user' => [
+                'class' => UserFixture::class,
+                'dataFile' => codecept_data_dir() . 'admin.php'
+            ],
+        ]);
+
+        $this->amGoingTo('log in');
+        $this->amOnRoute('/site/login');
+
+        $this->dontSee('Logout (admin)');
+
+        $this->submitForm('#login-form', [
+            'LoginForm' => [
+                'username' => 'admin',
+                'password' => 'Qwer1234',
+            ],
+        ]);
+
+        $this->see('Logout (admin)');
+        $this->dontSeeElement('#login-form');
+    }
 }
