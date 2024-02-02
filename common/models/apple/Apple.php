@@ -50,7 +50,7 @@ class Apple extends ActiveRecord
     protected function ensurePresence()
     {
         if (!$this->isPresent()) {
-            throw new NonPresentAppleException();
+            Yii::$app->session->addFlash('error', 'The apple has not appeared yet');
         }
     }
 
